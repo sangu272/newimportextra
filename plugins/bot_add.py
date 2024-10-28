@@ -4549,7 +4549,7 @@ async def join_watcher(_, message):
 import random
 import asyncio
 from pyrogram import filters
-LOG = "Gaana_MusicBot" #Dont change it because it fix all errors
+LOG = "PBX_MUSICBOT" #Dont change it because it fix all errors
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import os
 from config import LOG_GROUP_ID
