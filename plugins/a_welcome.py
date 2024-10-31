@@ -170,7 +170,7 @@ async def greet_new_members(_, member: ChatMemberUpdated):
     except Exception as e:
         return
 
-__MODULE__ = "Wᴇᴄᴏᴍᴇ"
+__MODULE__ = "ᴀᴡᴇᴄᴏᴍᴇ"
 __HELP__ = """
 ## Aᴜᴛᴏ-Wᴇᴄᴏᴍᴇ Mᴏᴅᴜᴇ Cᴏᴍᴍᴀɴᴅs
 
@@ -179,8 +179,6 @@ __HELP__ = """
 Eɴᴀʙᴇs ᴏʀ ᴅɪsᴀʙᴇs ᴛʜᴇ ᴀᴜᴛᴏ-ᴡᴇᴄᴏᴍᴇ ғᴇᴀᴛᴜʀᴇ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴄʜᴀᴛ.
 
 **Usᴀɢᴇ:**
-/welcome [ᴏɴ|ᴏғғ] (ғᴏʀ ʙᴏᴛ)
-
 /awelcome [ᴏɴ|ᴏғғ] (ғᴏʀ ᴀssɪsᴛᴀɴᴄᴇ)
 
 **Dᴇᴛᴀɪs:**
