@@ -1,3 +1,5 @@
+from BADMUSIC import app
+from BADMUSIC.core.mongo import mongodb
 from pyrogram import filters
 from pyrogram.types import Message
 from datetime import datetime, timedelta
@@ -9,9 +11,6 @@ from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, ChatPermissions
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import UserNotParticipant, UserAdminInvalid
-
-from BADMUSIC import app
-from BADMUSIC.core.mongo import mongodb
 
 
 antiflood_collection = mongodb.antiflood_settings
@@ -47,7 +46,7 @@ async def check_admin_rights(client, message: Message):
     return False
 
 
-@app.on_message(filters.command(["flood", "lood"], prefixes=["/", "!", ".", "F", "f"]))
+@app.on_message(filters.command("flood"))
 async def get_flood_settings(client, message: Message):
     if not await check_admin_rights(client, message):
         return
@@ -60,7 +59,7 @@ async def get_flood_settings(client, message: Message):
         f"Delete Flood Messages: {settings['delete_flood']}"
     )
 
-@app.on_message(filters.command(["setflood", "etfood", "f"], prefixes=["/", "!", ".", "S", "s"]))
+@app.on_message(filters.command("setflood"))
 async def set_flood_limit(client, message: Message):
     if not await check_admin_rights(client, message):
         return
@@ -84,7 +83,7 @@ async def set_flood_limit(client, message: Message):
         except ValueError:
             await message.reply("Invalid flood limit. Please provide a valid number or 'off'.")
 
-@app.on_message(filters.command(["setfloodtimer", "etfloodtime", "ft"], prefixes=["/", "!", ".", "S", "s"]))
+@app.on_message(filters.command("setfloodtimer"))
 async def set_flood_timer(client, message: Message):
     if not await check_admin_rights(client, message):
         return
@@ -108,7 +107,7 @@ async def set_flood_timer(client, message: Message):
     except ValueError:
         await message.reply("Invalid timer settings. Please provide a valid number.")
 
-@app.on_message(filters.command(["floodmode", "loodmode", "m"], prefixes=["/", "!", ".", "F", "f"]))
+@app.on_message(filters.command("floodmode"))
 async def set_flood_mode(client, message: Message):
     if not await check_admin_rights(client, message):
         return
@@ -127,7 +126,7 @@ async def set_flood_mode(client, message: Message):
     update_chat_flood_settings(chat_id, {"flood_action": action})
     await message.reply(f"Flood action set to {action}.")
 
-@app.on_message(filters.command(["clearflood", "learflood", "f"], prefixes=["/", "!", ".", "C", "c"]))
+@app.on_message(filters.command("clearflood"))
 async def set_flood_clear(client, message: Message):
     if not await check_admin_rights(client, message):
         return
@@ -146,36 +145,40 @@ flood_count = {}
 
 @app.on_message(filters.group, group=31)
 async def flood_detector(client, message: Message):
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    
-    settings = await get_chat_flood_settings(chat_id)
+    try:
+        chat_id = message.chat.id
 
-    if settings['flood_limit'] == 0:
-        return
-    
-    if chat_id not in flood_count:
-        flood_count[chat_id] = {}
-    
-    user_flood_data = flood_count[chat_id].get(user_id, {"count": 0, "first_message_time": datetime.now()})
+        user_id = message.from_user.id
+        settings = await get_chat_flood_settings(chat_id)
+        participant = await client.get_chat_member(message.chat.id, message.from_user.id)
+        if participant.status in (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER):
+            return
 
-    flood_timer = settings.get('flood_timer', 0)
-    
-    if (datetime.now() - user_flood_data['first_message_time']).seconds > flood_timer:
-        user_flood_data = {"count": 1, "first_message_time": datetime.now()}
-    else:
-        user_flood_data['count'] += 1
-    
-    flood_count[chat_id][user_id] = user_flood_data
+        if settings['flood_limit'] == 0:
+            return
 
-    if user_flood_data['count'] > settings['flood_limit']:
-        action = settings['flood_action']
-        await take_flood_action(client, message, action)
-        
-        if settings['delete_flood']:
-            await message.delete()
+        if chat_id not in flood_count:
+            flood_count[chat_id] = {}
 
+        user_flood_data = flood_count[chat_id].get(user_id, {"count": 0, "first_message_time": datetime.now()})
+        flood_timer = settings.get('flood_timer', 0)
 
+        if (datetime.now() - user_flood_data['first_message_time']).seconds > flood_timer:
+            user_flood_data = {"count": 1, "first_message_time": datetime.now()}
+        else:
+            user_flood_data['count'] += 1
+
+        flood_count[chat_id][user_id] = user_flood_data
+
+        if user_flood_data['count'] > settings['flood_limit']:
+            action = settings['flood_action']
+            await take_flood_action(client, message, action)
+
+            if settings['delete_flood']:
+                await message.delete()
+                
+    except Exception as e:
+        print(f"An error occurred in flood_detector: {e}")
 async def take_flood_action(client, message, action):
     user_id = message.from_user.id
     chat_id = message.chat.id
