@@ -10,6 +10,12 @@ from pyrogram import filters
 from utils.permissions import adminsOnly, member_permissions
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from BADMUSIC.utils.database import (
+    deleteall_filters,
+    get_filter,
+    get_filters_names,
+    save_filter,
+)
 
 @app.on_message(filters.command("filter") & admin_filter)
 @user_admin
