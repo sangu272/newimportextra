@@ -3,6 +3,7 @@ from BADMUSIC import app
 from config import BOT_USERNAME
 from BADMUSIC.utils.bad_ban import admin_filter
 from utils.filtersdb import *
+from config import BANNED_USERS
 from BADMUSIC.utils.filters_func import GetFIlterMessage, get_text_reason, SendFilterMessage
 from BADMUSIC.utils.admin import user_admin
 from pyrogram import filters
