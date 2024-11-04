@@ -4,7 +4,7 @@ from config import BOT_USERNAME
 from BADMUSIC.utils.bad_ban import admin_filter
 from utils.filtersdb import *
 from BADMUSIC.utils.filters_func import GetFIlterMessage, get_text_reason, SendFilterMessage
-from BADMUSIC.utils.baddb import user_admin
+from BADMUSIC.utils.admin import user_admin
 from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
