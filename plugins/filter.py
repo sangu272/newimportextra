@@ -93,23 +93,25 @@ async def _filters(client, message):
     )
 
 
-@app.on_message(filters.command('stopall') & admin_filter)
-async def stopall(client, message):
-    chat_id = message.chat.id
-    chat_title = message.chat.title 
-    user = await client.get_chat_member(chat_id,message.from_user.id)
-    if not user.status == ChatMemberStatus.OWNER :
-        return await message.reply_text("Only Owner Can Use This!!") 
-
-    KEYBOARD = InlineKeyboardMarkup(
-        [[InlineKeyboardButton(text='Delete all filters', callback_data='custfilters_stopall')],
-        [InlineKeyboardButton(text='Cancel', callback_data='custfilters_cancel')]]
-    )
-
-    await message.reply(
-        text=(f'Are you sure you want to stop **ALL** filters in {chat_title}? This action is irreversible.'),
-        reply_markup=KEYBOARD
-    )
+@app.on_message(filters.command("stopall") & ~filters.private & ~BANNED_USERS)
+@adminsOnly("can_change_info")
+async def stop_all(_, message):
+    _filters = await get_filters_names(message.chat.id)
+    if not _filters:
+        await message.reply_text("**ɴᴏ ғɪʟᴛᴇʀs ɪɴ ᴛʜɪs ᴄʜᴀᴛ.**")
+    else:
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("ʏᴇs, ᴅᴏ ɪᴛ", callback_data="stop_yes"),
+                    InlineKeyboardButton("ɴᴏ, ᴅᴏɴ'ᴛ ᴅᴏ ɪᴛ", callback_data="stop_no"),
+                ]
+            ]
+        )
+        await message.reply_text(
+            "**ᴀʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ғɪʟᴛᴇʀs ɪɴ ᴛʜɪs ᴄʜᴀᴛ ғᴏʀᴇᴠᴇʀ ?.**",
+            reply_markup=keyboard,
+        )
 
 
 @app.on_callback_query(filters.regex("^custfilters_"))
@@ -130,20 +132,24 @@ async def stopall_callback(client, callback_query: CallbackQuery):
         await callback_query.edit_message_text(text='Cancelled.')
 
 
-
-@app.on_message(filters.command('stopfilter') & admin_filter)
-@user_admin
-async def stop(client, message):
-    chat_id = message.chat.id
-    if not (len(message.command) >= 2):
-        await message.reply('Use Help To Know The Command Usage')
-        return
-    
-    filter_name = message.command[1]
-    if (filter_name not in await get_filters_list(chat_id)):
-        await message.reply("You haven't saved any filters on this word yet!")
-        return
-    
-    await stop_db(chat_id, filter_name)
-    await message.reply(f"I've stopped `{filter_name}`.")
-  
+@app.on_callback_query(filters.regex("stop_(.*)") & ~BANNED_USERS)
+async def stop_all_cb(_, cb):
+    chat_id = cb.message.chat.id
+    from_user = cb.from_user
+    permissions = await member_permissions(chat_id, from_user.id)
+    permission = "can_change_info"
+    if permission not in permissions:
+        return await cb.answer(
+            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀᴇᴄǫᴜʀɪᴇᴅ ᴘᴇʀᴍɪssɪᴏɴ.\n ᴘᴇʀᴍɪssɪᴏɴ: {permission}",
+            show_alert=True,
+        )
+    input = cb.data.split("_", 1)[1]
+    if input == "yes":
+        stoped_all = await deleteall_filters(chat_id)
+        if stoped_all:
+            return await cb.message.edit(
+                "**sᴜᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴅᴇᴅ ᴀʟʟ ғɪʟᴛᴇʀ's ᴏɴ ᴛʜɪs ᴄʜᴀᴛ.**"
+            )
+    if input == "no":
+        await cb.message.reply_to_message.delete()
+        await cb.message.delete()
