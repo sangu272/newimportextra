@@ -2,7 +2,7 @@ import re
 from BADMUSIC import app
 from config import BOT_USERNAME
 from BADMUSIC.utils.bad_ban import admin_filter
-from BADMUSIC.mongo.filtersdb import *
+from utils.filtersdb import *
 from BADMUSIC.utils.filters_func import GetFIlterMessage, get_text_reason, SendFilterMessage
 from BADMUSIC.utils.baddb import user_admin
 from pyrogram import filters
