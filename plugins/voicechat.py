@@ -1,4 +1,3 @@
-
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from strings import get_string
@@ -160,7 +159,7 @@ async def search(event):
 
 
 
-__MODULE__ = "Mᴀᴛʜ"
+__MODULE__ = "ᴍᴀᴛʜ"
 __HELP__ = """
 
 ## Mᴀᴛʜ Cᴏᴍᴍᴀɴᴅ Hᴇᴘ
