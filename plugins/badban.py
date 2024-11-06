@@ -76,7 +76,7 @@ async def restriction_app(app :app, message):
             print(f"present {unbanned}")
             if unbanned in unban:
                 await app.unban_chat_member(chat_id, user_id)
-                await message.reply(f"ᴏᴋ , sɪʀ ᴋᴀʀ ᴅᴇᴛɪ ʜᴜ ᴜɴʙᴀɴ 😏") 
+                await message.reply(f"ᴏᴋ , sɪʀ ᴋᴀʀ ᴅᴇᴛᴀ ʜᴜ ᴜɴʙᴀɴ 😏") 
                 
         for kicked in data:
             print(f"present {kicked}")
