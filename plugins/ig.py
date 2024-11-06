@@ -51,7 +51,7 @@ async def download_instagram_video(client, message):
             return await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
 
 
-__MODULE__ = "Rᴇᴇʟ"
+__MODULE__ = "ɪɢ-ʀᴇᴇʟ"
 __HELP__ = """
 **ɪɴsᴛᴀɢʀᴀᴍ ʀᴇᴇʟ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ:**
 
