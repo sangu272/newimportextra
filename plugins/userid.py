@@ -89,7 +89,7 @@ async def get_video_id(client, message):
 
 
 
-__MODULE__ = "Usᴇʀɪᴅ"
+__MODULE__ = "ᴜsᴇʀɪᴅ"
 __HELP__ = """
 ## Usᴇʀ ID Cᴏᴍᴍᴀɴᴅs Hᴇᴘ
 
