@@ -53,7 +53,7 @@ async def figlet_handler(Client, query: CallbackQuery):
         return await query.answer(e, show_alert=True)
 
 
-__MODULE__ = "Fɪɢʟᴇᴛ"
+__MODULE__ = "ғɪɢʟᴇᴛ"
 __HELP__ = """
 **ғɪɢʟᴇᴛ**
 
