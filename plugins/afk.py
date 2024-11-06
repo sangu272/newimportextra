@@ -377,7 +377,7 @@ async def chat_watcher_func(_, message):
         except:
             return
                       
-__MODULE__ = "Aғᴋ"
+__MODULE__ = "ᴀғᴋ"
 __HELP__ = """ 
 
 ##  ᴀғᴋ 
