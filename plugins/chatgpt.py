@@ -28,7 +28,7 @@ async def chat_gpt(bot, message):
         await message.reply_text(f"**ᴇʀʀᴏʀ: {e} ")
 
 
-__MODULE__ = "CʜᴀᴛGᴘᴛ"
+__MODULE__ = "ᴄʜᴀᴛɢᴘᴛ"
 __HELP__ = """
 /advice - ɢᴇᴛ ʀᴀɴᴅᴏᴍ ᴀᴅᴠɪᴄᴇ ʙʏ ʙᴏᴛ
 /ai [ǫᴜᴇʀʏ] - ᴀsᴋ ʏᴏᴜʀ ǫᴜᴇsᴛɪᴏɴ ᴡɪᴛʜ ᴄʜᴀᴛɢᴘᴛ's ᴀɪ
