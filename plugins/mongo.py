@@ -11,7 +11,7 @@ from BADMUSIC.utils.pastebin import BADbin
 
 MONGO_DB_URI = os.getenv("MONGO_DB_URI")
 
-@app.on_message(filters.command("mongochk") & SUDOERS)
+@app.on_message(filters.command("mongochk"))
 async def mongo_check_command(client, message: Message):
     if len(message.command) < 2:
         await message.reply("Please provide your MongoDB URL with the command: `/mongochk your_mongo_url`")
@@ -160,6 +160,8 @@ async def delete_db_command(client, message: Message):
         await message.reply(f"**Failed to delete databases Try to delete by count**")
 
 
+
+
 #==============================[⚠️ CHECK DATABASE ⚠️]=======================================
 
 
@@ -231,33 +233,64 @@ def restore_data_to_new_mongo(new_client, backup_data):
 @app.on_message(filters.command(["transferdb", "copydb", "paste", "copydatabase", "transferdatabase"]) & filters.user(OWNER_ID))
 async def transfer_db_command(client, message: Message):
     try:
-        if len(message.command) < 2:
-            await message.reply("Please provide the new MongoDB URL with the command: `/transferdb your_new_mongodb_url`")
+        if len(message.command) == 2:
+            main_mongo_url = MONGO_DB_URI
+            target_mongo_url = message.command[1]
+        elif len(message.command) == 3:
+            main_mongo_url = message.command[1]
+            target_mongo_url = message.command[2]
+        else:
+            await message.reply("Please provide one or two MongoDB URLs as required.")
             return
-        ok = await message.reply_text("**Ok wait transfer process Starting...**")
-        new_mongo_url = message.command[1]
-        
-        if not re.match(mongo_url_pattern, new_mongo_url):
-            await message.reply("**The provided MongoDB URL format is invalid! ❌**")
-            return
-        
-        # Step 1: Backup data from the old MongoDB instance
-        old_mongo_client = MongoClient(MONGO_DB_URI, serverSelectionTimeoutMS=5000)
-        backup_data = backup_old_mongo_data(old_mongo_client)
-        old_mongo_client.close()
-        await message.reply("**Data copy from old MongoDB is complete. 📦**\n\n**Now opening new MongoDB and pasting**")
-        
-        # Step 2: Restore the backed-up data into the new MongoDB instance
-        new_mongo_client = MongoClient(new_mongo_url, serverSelectionTimeoutMS=5000)
-        restore_data_to_new_mongo(new_mongo_client, backup_data)
-        new_mongo_client.close()
-        await ok.delete()
-        await message.reply("**Data transfer to the new MongoDB is successful! 🎉**")
-    
-    except Exception as e:
-        await ok.delete()
-        await message.reply(f"**Data transfer to the new MongoDB is successful! 🎉\n\nCheck your new mongo databse by /mongochk your mongo here\n\nIf not transferred from old mongo then either your mongo is dead or invalid.")
 
+        if not re.match(mongo_url_pattern, target_mongo_url):
+            await message.reply("**The target MongoDB URL format is invalid! ❌**")
+            return
+
+        # Backup data from the main MongoDB instance
+        main_client = MongoClient(main_mongo_url, serverSelectionTimeoutMS=5000)
+        backup_data = backup_old_mongo_data(main_client)
+        main_client.close()
+
+        # Restore to the target MongoDB instance
+        target_client = MongoClient(target_mongo_url, serverSelectionTimeoutMS=5000)
+        restore_data_to_new_mongo(target_client, backup_data)
+        target_client.close()
+
+        await message.reply("**Data transfer to the new MongoDB is successful! 🎉**")
+
+    except Exception as e:
+        await message.reply(f"**Data transfer failed:** {e}")
+        
+#================DOWNLOAD-DATA===================
+
+import json
+import io
+
+@app.on_message(filters.command("downloaddata") & filters.user(OWNER_ID))
+async def download_data_command(client, message: Message):
+    try:
+        mongo_url = get_mongo_url(message)
+        mongo_client = MongoClient(mongo_url, serverSelectionTimeoutMS=5000)
+
+        data = {}
+        for db_name in mongo_client.list_database_names():
+            if db_name not in ["admin", "local"]:
+                data[db_name] = {}
+                db = mongo_client[db_name]
+                for col_name in db.list_collection_names():
+                    data[db_name][col_name] = list(db[col_name].find())
+
+        mongo_client.close()
+
+        # Convert data to JSON and send as a file
+        json_data = json.dumps(data, default=str, indent=2)
+        file = io.BytesIO(json_data.encode('utf-8'))
+        file.name = "mongo_data.json"
+        await client.send_document(chat_id=message.chat.id, document=file)
+
+    except Exception as e:
+        await message.reply(f"**Failed to download data:** {e}")
 
 __MODULE__ = "MongoDB"
 __HELP__ = """
@@ -275,9 +308,7 @@ __HELP__ = """
 
 • /transferdb [new_mongo_url]: - Transfers all databases from the old MongoDB (from environment) to the new MongoDB URL.
 
+• /downloaddata - Download your all data from database in a document file.
+
 • /mongochk [MongoDB_URL]: Verifies the given MongoDB URL and lists all databases and collections in it.
 """
-
-
-
-
