@@ -65,7 +65,7 @@ async def bored_command(client, message):
         await message.reply("Fᴀɪʟᴇᴅ ᴛᴏ ғᴇᴛᴄʜ ᴀᴄᴛɪᴠɪᴛʏ.")
 
 
-__MODULE__ = "Fᴜɴ"
+__MODULE__ = "ғᴜɴ"
 __HELP__ = """
 **ʜᴀᴠɪɴɢ ꜰᴜɴ:**
 
