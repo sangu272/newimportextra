@@ -253,7 +253,7 @@ async def get_goodbye_func(_, message):
     )
 
 
-__MODULE__ = "Gᴏᴏᴅʙʏᴇ"
+__MODULE__ = "ɢᴏᴏᴅʙʏᴇ"
 __HELP__ = """
 ʜᴇʀᴇ ɪs ᴛʜᴇ ʜᴇʟᴘ ғᴏʀ ɢᴏᴏᴅʙʏᴇ:
 
