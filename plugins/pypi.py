@@ -49,7 +49,7 @@ async def pypi_info_command(client, message):
         )
 
 
-__MODULE__ = "Pʏᴘɪ"
+__MODULE__ = "ᴘʏᴘɪ"
 __HELP__ = """
 **ᴄᴏᴍᴍᴀɴᴅs:**
 • /pypi <package_name>`: Get details about a specified Python package from PyPI.
