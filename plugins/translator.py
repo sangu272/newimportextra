@@ -1,4 +1,3 @@
-
 from BADMUSIC import app
 from pyrogram import filters
 from deep_translator import GoogleTranslator
