@@ -155,7 +155,7 @@ async def drawText(image_path, text):
 
     return webp_file
       
-__MODULE__ = "Mᴍғ"
+__MODULE__ = "ᴍᴍғ"
 __HELP__ = """
 **COMMANDS**:
 - /mmf: ᴡʀɪᴛᴇ ᴛᴇxᴛ ᴏɴ ᴀɴ ᴄʟᴏᴜᴅ ᴀɴᴅ ɢᴇᴛ ᴀɴ ᴇᴅɪᴛᴇᴅ ᴘʜᴏᴛᴏ, sᴛɪᴄᴋᴇʀ
