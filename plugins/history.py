@@ -60,7 +60,7 @@ async def sg(client: Client, message: Message):
     await lol.delete()
 
 
-__MODULE__ = "Hɪsᴛᴏʀʏ"
+__MODULE__ = "ʜɪsᴛᴏʀʏ"
 __HELP__ = """
 ## Hɪsᴛᴏʀʏ Cᴏᴍᴍᴀɴᴅs Hᴇᴘ
 
