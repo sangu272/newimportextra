@@ -292,7 +292,7 @@ async def download_data_command(client, message: Message):
     except Exception as e:
         await message.reply(f"**Failed to download data:** {e}")
 
-__MODULE__ = "MongoDB"
+__MODULE__ = "ᴍᴏɴɢᴏᴅʙ"
 __HELP__ = """
 **MongoDB Management Commands:**
 
