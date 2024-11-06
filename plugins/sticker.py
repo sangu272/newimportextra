@@ -313,7 +313,7 @@ async def kang(client, message: Message):
 
 
 
-__MODULE__ = "Sᴛɪᴄᴋᴇʀ"
+__MODULE__ = "sᴛɪᴄᴋᴇʀ"
 __HELP__ = """
 **COMMANDS:**
 
