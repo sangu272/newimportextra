@@ -1,92 +1,40 @@
-import re
+from pyrogram import Client, filters
 import requests
-from pyrogram import filters
+import re
 from BADMUSIC import app
-from config import LOG_GROUP_ID
 
 
-@app.on_message(filters.command(["ig", "instagram", "reel"]))
-async def download_instagram_video(client, message):
-    # Check if the user provided a URL
+# Function to fetch thumbnail from Instagram Reels
+def get_reels_thumbnail(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            # Regex to find og:image meta tag
+            match = re.search(r'"og:image" content="([^"]+)"', response.text)
+            if match:
+                return match.group(1)  # Return the thumbnail URL
+        return None
+    except Exception as e:
+        return None
+
+# Command to download Instagram Reels photo
+@app.on_message(filters.command("reels") & filters.private)
+def reels_photo_download(client, message):
     if len(message.command) < 2:
-        await message.reply_text(
-            "Pʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴛʜᴇ Iɴsᴛᴀɢʀᴀᴍ ʀᴇᴇʟ URL ᴀғᴛᴇʀ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ"
-        )
+        message.reply_text("Please provide a valid Instagram Reels URL.\nUsage: `/reels <URL>`")
         return
 
-    # Extract the URL from the message
-    url = message.text.split()[1]
+    url = message.command[1]
+    message.reply_text("Fetching the thumbnail, please wait...")
 
-    # Validate the URL format for Instagram using regex
-    if not re.match(
-        re.compile(r"^(https?://)?(www\.)?(instagram\.com|instagr\.am)/.*$"), url
-    ):
-        return await message.reply_text(
-            "Tʜᴇ ᴘʀᴏᴠɪᴅᴇᴅ URL ɪs ɴᴏᴛ ᴀ ᴠᴀʟɪᴅ Iɴsᴛᴀɢʀᴀᴍ URL😅😅"
-        )
-    
-    # Notify user that the video is being processed
-    a = await message.reply_text("ᴘʀᴏᴄᴇssɪɴɢ...")
-
-    # API URL for Instagram video download (This is your existing API)
-    api_url = f"https://insta-dl.hazex.workers.dev/?url={url}"
-
-    try:
-        # Send a GET request to the API with a timeout of 10 seconds
-        response = requests.get(api_url, timeout=10)
+    # Fetch the thumbnail
+    thumbnail_url = get_reels_thumbnail(url)
+    if thumbnail_url:
+        # Send the photo to the user
+        client.send_photo(chat_id=message.chat.id, photo=thumbnail_url, caption="Here is your Reels thumbnail!")
+    else:
+        message.reply_text("Failed to fetch the thumbnail. Please check the URL and try again.")
         
-        # Check if the request was successful (status code 200)
-        if response.status_code != 200:
-            await a.edit("Fᴀɪʟᴇᴅ ᴛᴏ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴛʜᴇ ᴀᴘɪ.")
-            return
-
-        # Try to parse the JSON response
-        result = response.json()
-
-        # If the result has an error, notify the user
-        if result.get("error"):
-            await a.edit("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
-            return
-
-        # If no error, extract the video data
-        data = result["result"]
-        video_url = data["url"]
-        duration = data["duration"]
-        quality = data["quality"]
-        file_type = data["extension"]
-        size = data["formattedSize"]
-
-        # Format the caption with video information
-        caption = f"**Dᴜʀᴀᴛɪᴏɴ :** {duration}\n**Qᴜᴀʟɪᴛʏ :** {quality}\n**Tʏᴘᴇ :** {file_type}\n**Sɪᴢᴇ :** {size}"
-
-        # Remove processing message and send the video
-        await a.delete()
-        await message.reply_video(video_url, caption=caption)
-
-    except requests.exceptions.Timeout:
-        # Handle timeout errors
-        error_message = "Tʜᴇ ᴀᴘɪ ᴛɪᴇᴅ ᴏᴜᴛ. Pʟᴇᴀsᴇ ᴛʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ."
-        await a.delete()
-        await message.reply_text(error_message)
-
-    except requests.exceptions.RequestException as e:
-        # Handle other request-related errors
-        error_message = f"Request Error: {str(e)}"
-        await a.delete()
-        await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴛʜᴇ ᴀᴘɪ.")
-
-        # Log the error in the log group
-        await app.send_message(LOG_GROUP_ID, error_message)
-
-    except Exception as e:
-        # Handle any other unexpected errors
-        error_message = f"Unexpected Error: {str(e)}"
-        await a.delete()
-        await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
-
-        # Log the error in the log group
-        await app.send_message(LOG_GROUP_ID, error_message)
-
 
 __MODULE__ = "ɪɢ-ʀᴇᴇʟ"
 __HELP__ = """
