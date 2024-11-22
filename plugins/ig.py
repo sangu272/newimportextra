@@ -28,12 +28,18 @@ async def download_instagram_video(client, message):
     # Notify user that the video is being processed
     a = await message.reply_text("ᴘʀᴏᴄᴇssɪɴɢ...")
 
-    # API URL for Instagram video download
+    # API URL for Instagram video download (This is your existing API)
     api_url = f"https://insta-dl.hazex.workers.dev/?url={url}"
 
     try:
         # Send a GET request to the API
         response = requests.get(api_url)
+        
+        # Check if the request was successful (status code 200)
+        if response.status_code != 200:
+            await a.edit("Fᴀɪʟᴇᴅ ᴛᴏ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴛʜᴇ ᴀᴘɪ.")
+            return
+
         # Try to parse the JSON response
         result = response.json()
 
@@ -60,11 +66,13 @@ async def download_instagram_video(client, message):
     except Exception as e:
         # If there's any error in the process, log it and notify the user
         error_message = f"Eʀʀᴏʀ :\n{e}"
+
+        # Remove processing message and send a failure message
         await a.delete()
         await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
-        
+
         # Log the error in the log group
-        await app.send_message(LOG_GROUP_ID, error_message) 
+        await app.send_message(LOG_GROUP_ID, error_message)
 
 
 __MODULE__ = "ɪɢ-ʀᴇᴇʟ"
