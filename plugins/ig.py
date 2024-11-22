@@ -32,8 +32,8 @@ async def download_instagram_video(client, message):
     api_url = f"https://insta-dl.hazex.workers.dev/?url={url}"
 
     try:
-        # Send a GET request to the API
-        response = requests.get(api_url)
+        # Send a GET request to the API with a timeout of 10 seconds
+        response = requests.get(api_url, timeout=10)
         
         # Check if the request was successful (status code 200)
         if response.status_code != 200:
@@ -44,7 +44,7 @@ async def download_instagram_video(client, message):
         result = response.json()
 
         # If the result has an error, notify the user
-        if result["error"]:
+        if result.get("error"):
             await a.edit("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
             return
 
@@ -63,11 +63,24 @@ async def download_instagram_video(client, message):
         await a.delete()
         await message.reply_video(video_url, caption=caption)
 
-    except Exception as e:
-        # If there's any error in the process, log it and notify the user
-        error_message = f"Eʀʀᴏʀ :\n{e}"
+    except requests.exceptions.Timeout:
+        # Handle timeout errors
+        error_message = "Tʜᴇ ᴀᴘɪ ᴛɪᴇᴅ ᴏᴜᴛ. Pʟᴇᴀsᴇ ᴛʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ."
+        await a.delete()
+        await message.reply_text(error_message)
 
-        # Remove processing message and send a failure message
+    except requests.exceptions.RequestException as e:
+        # Handle other request-related errors
+        error_message = f"Request Error: {str(e)}"
+        await a.delete()
+        await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴄᴏɴɴᴇᴄᴛ ᴛᴏ ᴛʜᴇ ᴀᴘɪ.")
+
+        # Log the error in the log group
+        await app.send_message(LOG_GROUP_ID, error_message)
+
+    except Exception as e:
+        # Handle any other unexpected errors
+        error_message = f"Unexpected Error: {str(e)}"
         await a.delete()
         await message.reply_text("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ʀᴇᴇʟ")
 
