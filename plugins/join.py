@@ -5,7 +5,7 @@ from BADMUSIC import app
 
 #--------------------------
 
-MUST_JOIN = "PBX_CHAT"
+MUST_JOIN = "TG_BIO_STYLE"
 #------------------------
 @app.on_message(filters.incoming & filters.private, group=-1)
 async def must_join_channel(app: Client, msg: Message):
