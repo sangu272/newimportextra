@@ -222,7 +222,7 @@ async def resetgb(_, m: Message):
     db = Greetings(m.chat.id)
     if m and not m.from_user:
         return
-    text = "sᴀᴅ ᴛᴏ sᴇᴇ ʏᴏᴜ ʟᴇᴀᴠɪɴɢ {first}.\ ᴛᴀᴋᴇ ᴄᴀʀᴇ! 🌸"
+    text = "sᴀᴅ ᴛᴏ sᴇᴇ ʏᴏᴜ ʟᴇᴀᴠɪɴɢ {first}. ᴛᴀᴋᴇ ᴄᴀʀᴇ! 🌸"
     db.set_goodbye_text(text,None)
     await m.reply_text("Ok Done!")
     return
@@ -320,7 +320,7 @@ async def member_has_joined(c: app, member: ChatMemberUpdated):
             except RPCError:
                 pass
         if not teks:
-            teks = "ʜᴇʏ {first}, ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {chatname} 🥀, ᴜsᴇ /userbotjoin ᴛᴏ ɪɴᴠɪᴛᴇ ᴛʜᴇ ᴀssɪᴛᴀɴᴛ"
+            teks = "ʜᴇʏ {first}, ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {chatname} 🥀, 🫶🏻✨☘️"
         try:
             if not UwU:
                 jj = await c.send_message(
@@ -400,7 +400,7 @@ async def member_has_left(c: app, member: ChatMemberUpdated):
             )
             return
         if not teks:
-            teks = "sᴀᴅ ᴛᴏ sᴇᴇ ʏᴏᴜ ʟᴇᴀᴠɪɴɢ {first}.\ ᴛᴀᴋᴇ ᴄᴀʀᴇ! 🌸"
+            teks = "sᴀᴅ ᴛᴏ sᴇᴇ ʏᴏᴜ ʟᴇᴀᴠɪɴɢ {first}. ᴛᴀᴋᴇ ᴄᴀʀᴇ! 🌸"
         try:
             if not UwU:
                 ooo = await c.send_message(
