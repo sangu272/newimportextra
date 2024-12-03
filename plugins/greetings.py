@@ -320,7 +320,7 @@ async def member_has_joined(c: app, member: ChatMemberUpdated):
             except RPCError:
                 pass
         if not teks:
-            teks = "ʜᴇʏ {first}, ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {chatname} 🥀"
+            teks = "ʜᴇʏ {first}, ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {chatname} 🥀, ᴜsᴇ /userbotjoin ᴛᴏ ɪɴᴠɪᴛᴇ ᴛʜᴇ ᴀssɪᴛᴀɴᴛ"
         try:
             if not UwU:
                 jj = await c.send_message(
