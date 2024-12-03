@@ -4571,7 +4571,7 @@ photo = [
 @app.on_message(filters.new_chat_members, group=-9)
 async def join_watcher(_, message):
     try:
-        LOG = "PBX_MUSICBOT"
+        LOG = "MAGICIAN_CHATBOT"
         userbot = await get_assistant(message.chat.id)
         chat = message.chat
         for members in message.new_chat_members:
